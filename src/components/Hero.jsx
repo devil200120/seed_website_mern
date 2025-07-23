@@ -12,7 +12,7 @@ function Hero() {
       highlight: "SPICES",
       subtitle: "Your Trusted Partner in Premium Agricultural Exports",
       description: "Connecting Indian Farms to Global Markets with Quality, Trust and Excellence",
-      image: "/public/images/new_image1.jpg",
+      image: "/images/new_image1.jpg",
       primaryBtn: "Our Products",
       secondaryBtn: "Contact Us",
       category: "Products"
@@ -23,7 +23,7 @@ function Hero() {
       highlight: "VEGETABLES",
       subtitle: "Fresh Farm-to-Export Vegetables",
       description: "Delivering the finest fresh vegetables from Indian farms to global markets",
-      image: "/public/images/new_image3.jpg",
+      image: "/images/new_image3.jpg",
       primaryBtn: "View Vegetables",
       secondaryBtn: "Contact Us",
       category: "Vegetables"
@@ -34,7 +34,7 @@ function Hero() {
       highlight: "FRUITS",
       subtitle: "Tropical & Seasonal Fruit Exports",
       description: "Experience the authentic taste of Indian fruits with guaranteed freshness",
-      image: "/public/images/new_image2.jpg",
+      image: "/images/new_image2.jpg",
       primaryBtn: "Explore Fruits",
       secondaryBtn: "Contact Us",
       category: "Fruits"
