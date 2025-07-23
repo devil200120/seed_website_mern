@@ -44,28 +44,28 @@ function Gallery() {
     },
     { 
       category: "Facility", 
-      image: "/src/photo-1457530378978-8bac673b8062.jpg", 
+      image: "/images/photo-1457530378978-8bac673b8062.jpg", 
       title: "Packaging Center",
       description: "Automated packaging with international standards",
       tags: ["Automated", "Standards"]
     },
     { 
       category: "Team", 
-      image: "/src/istockphoto-637719416-612x612.jpg", 
+      image: "/images/istockphoto-637719416-612x612.jpg", 
       title: "Expert Team",
       description: "Dedicated professionals ensuring quality at every step",
       tags: ["Professional", "Experienced"]
     },
     { 
       category: "Team", 
-      image: "/src/istockphoto-1126541751-612x612.jpg", 
+      image: "/images/istockphoto-1126541751-612x612.jpg", 
       title: "Farmer Partnership",
       description: "Strong partnerships with local farming communities",
       tags: ["Partnership", "Community"]
     },
     { 
       category: "Team", 
-      image: "/src/photo-1457530378978-8bac673b8062.jpg", 
+      image: "/images/photo-1457530378978-8bac673b8062.jpg", 
       title: "Quality Inspectors",
       description: "Expert quality inspectors ensuring premium standards",
       tags: ["Inspection", "Premium"]
