@@ -57,13 +57,7 @@ function Hero() {
     setCurrentSlide(index);
   };
 
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % slides.length);
-  };
-
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
-  };
+  
 
   // Pause auto-play on hover
   const handleMouseEnter = () => setIsAutoPlay(false);

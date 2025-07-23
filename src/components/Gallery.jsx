@@ -9,35 +9,35 @@ function Gallery() {
   const galleryImages = [
     { 
       category: "Products", 
-      image: "/src/istockphoto-637719416-612x612.jpg", 
+      image: "/images/istockphoto-637719416-612x612.jpg", 
       title: "Premium Spices Collection",
       description: "Hand-picked aromatic spices from the finest farms",
       tags: ["Organic", "Export Quality"]
     },
     { 
       category: "Products", 
-      image: "/src/istockphoto-1126541751-612x612.jpg", 
+      image: "/images/istockphoto-1126541751-612x612.jpg", 
       title: "Fresh Vegetables",
       description: "Farm-fresh vegetables ready for global export",
       tags: ["Fresh", "Nutritious"]
     },
     { 
       category: "Products", 
-      image: "/src/photo-1457530378978-8bac673b8062.jpg", 
+      image: "/images/photo-1457530378978-8bac673b8062.jpg", 
       title: "Exotic Fruits",
       description: "Tropical and seasonal fruits with guaranteed freshness",
       tags: ["Tropical", "Seasonal"]
     },
     { 
       category: "Facility", 
-      image: "/src/istockphoto-637719416-612x612.jpg", 
+      image: "/images/istockphoto-637719416-612x612.jpg", 
       title: "Processing Unit",
       description: "State-of-the-art processing facility with modern equipment",
       tags: ["Modern", "Certified"]
     },
     { 
       category: "Facility", 
-      image: "/src/istockphoto-1126541751-612x612.jpg", 
+      image: "/images/istockphoto-1126541751-612x612.jpg", 
       title: "Quality Control Lab",
       description: "Advanced testing and quality assurance laboratory",
       tags: ["Testing", "Quality"]
