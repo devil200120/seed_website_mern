@@ -5,6 +5,7 @@ import "./App.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import ScrollAnimations from "./components/ScrollAnimations";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 // Import pages
 import Home from "./pages/Home";
@@ -23,47 +24,71 @@ import Gallery from "./pages/Gallery";
 import ProductGallery from "./pages/ProductGallery";
 import Certifications from "./pages/Certifications";
 import Contact from "./pages/Contact";
+import LoginPage from "./pages/LoginPage";
+import AdminPanel from "./pages/AdminPanel";
 
 function App() {
   return (
     <>
-      <ScrollAnimations />
-      <Header />
-
       <Routes>
-        <Route path="/" element={<Home />} />
-
-        {/* About Us Routes */}
-        <Route path="/about" element={<AboutUs />} />
-        <Route path="/about/our-story" element={<OurStory />} />
-        <Route path="/about/mission-vision" element={<MissionVision />} />
-        <Route path="/about/our-team" element={<OurTeam />} />
-
-        {/* Services Routes */}
-        <Route path="/services" element={<Services />} />
-        <Route
-          path="/services/product-sourcing"
-          element={<ProductSourcing />}
+        {/* Admin Routes - No Header/Footer */}
+        <Route 
+          path="/admin" 
+          element={
+            <ProtectedRoute>
+              <AdminPanel />
+            </ProtectedRoute>
+          } 
         />
-        <Route path="/services/quality-control" element={<QualityControl />} />
+        
+        {/* Login Route - No Header/Footer */}
+        <Route path="/login" element={<LoginPage />} />
 
-        {/* Products Routes */}
-        <Route path="/products" element={<Products />} />
-        <Route path="/products/fresh-vegetables" element={<FreshVegetables />} />
-        <Route path="/products/fresh-fruits" element={<FreshFruits />} />
-        <Route path="/products/spices-herbs" element={<SpicesHerbs />} />
+        {/* Public Routes - With Header/Footer */}
+        <Route 
+          path="/*" 
+          element={
+            <>
+              <ScrollAnimations />
+              <Header />
+              
+              <Routes>
+                <Route path="/" element={<Home />} />
 
-        {/* Gallery Routes */}
-        <Route path="/gallery" element={<Gallery />} />
-        <Route path="/gallery/products" element={<ProductGallery />} />
+                {/* About Us Routes */}
+                <Route path="/about" element={<AboutUs />} />
+                <Route path="/about/our-story" element={<OurStory />} />
+                <Route path="/about/mission-vision" element={<MissionVision />} />
+                <Route path="/about/our-team" element={<OurTeam />} />
 
-        {/* Other Routes */}
-        <Route path="/certifications" element={<Certifications />} />
-        <Route path="/contact" element={<Contact />} />
+                {/* Services Routes */}
+                <Route path="/services" element={<Services />} />
+                <Route
+                  path="/services/product-sourcing"
+                  element={<ProductSourcing />}
+                />
+                <Route path="/services/quality-control" element={<QualityControl />} />
+
+                {/* Products Routes */}
+                <Route path="/products" element={<Products />} />
+                <Route path="/products/fresh-vegetables" element={<FreshVegetables />} />
+                <Route path="/products/fresh-fruits" element={<FreshFruits />} />
+                <Route path="/products/spices-herbs" element={<SpicesHerbs />} />
+
+                {/* Gallery Routes */}
+                <Route path="/gallery" element={<Gallery />} />
+                <Route path="/gallery/products" element={<ProductGallery />} />
+
+                {/* Other Routes */}
+                <Route path="/certifications" element={<Certifications />} />
+                <Route path="/contact" element={<Contact />} />
+              </Routes>
+
+              <Footer />
+            </>
+          } 
+        />
       </Routes>
-
-      <Footer />
-      
     </>
   );
 }

@@ -2,7 +2,7 @@ function About() {
   return (
     <section className="about" id="about">
       <div className="container">
-        <div className="section-header">
+        <div className="about-section-header">
           <h2>About Field to Feed Export</h2>
           <p>Leading Agricultural Export Company in India</p>
         </div>
@@ -28,22 +28,22 @@ function About() {
             </div>
             
             <div className="about-stats-container">
-              <div className="stats-grid">
-                <div className="stat-item">
-                  <div className="stat-number">500+</div>
-                  <div className="stat-label">Partner Farmers</div>
+              <div className="about-stats-grid">
+                <div className="about-stat-item">
+                  <div className="about-stat-number">500+</div>
+                  <div className="about-stat-label">Partner Farmers</div>
                 </div>
-                <div className="stat-item">
-                  <div className="stat-number">50+</div>
-                  <div className="stat-label">Countries Served</div>
+                <div className="about-stat-item">
+                  <div className="about-stat-number">50+</div>
+                  <div className="about-stat-label">Countries Served</div>
                 </div>
-                <div className="stat-item">
-                  <div className="stat-number">15+</div>
-                  <div className="stat-label">Years Experience</div>
+                <div className="about-stat-item">
+                  <div className="about-stat-number">15+</div>
+                  <div className="about-stat-label">Years Experience</div>
                 </div>
-                <div className="stat-item">
-                  <div className="stat-number">1000+</div>
-                  <div className="stat-label">Happy Clients</div>
+                <div className="about-stat-item">
+                  <div className="about-stat-number">1000+</div>
+                  <div className="about-stat-label">Happy Clients</div>
                 </div>
               </div>
             </div>
