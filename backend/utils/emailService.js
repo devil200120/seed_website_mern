@@ -36,7 +36,7 @@ const createTransporter = () => {
     config.logger = false;
   }
 
-  return nodemailer.createTransporter(config);
+  return nodemailer.createTransport(config);
 };
 
 /**
