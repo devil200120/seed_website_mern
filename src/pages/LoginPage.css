@@ -5,7 +5,7 @@
   align-items: center;
   justify-content: center;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   padding: 20px;
 }
 
@@ -125,6 +125,35 @@
   text-align: center;
 }
 
+.signup-link {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  border: 2px dashed #dee2e6;
+}
+
+.signup-link p {
+  margin: 0;
+  color: #5a6c7d;
+  font-size: 14px;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  color: #3498db;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0;
+  margin: 0;
+}
+
+.link-btn:hover {
+  color: #2980b9;
+}
+
 .demo-credentials {
   background: #f8f9fa;
   padding: 20px;
@@ -147,6 +176,40 @@
 
 .demo-credentials strong {
   color: #2c3e50;
+}
+
+/* Loading State */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-state p {
+  color: #7f8c8d;
+  margin: 0;
+  font-size: 14px;
 }
 
 .back-home-btn {
@@ -173,15 +236,15 @@
   .login-page {
     padding: 15px;
   }
-  
+
   .login-container {
     padding: 30px 25px;
   }
-  
+
   .company-logo h1 {
     font-size: 2.5rem;
   }
-  
+
   .company-logo h2 {
     font-size: 1.3rem;
   }
@@ -191,20 +254,20 @@
   .login-container {
     padding: 25px 20px;
   }
-  
+
   .company-logo h1 {
     font-size: 2rem;
   }
-  
+
   .company-logo h2 {
     font-size: 1.2rem;
   }
-  
+
   .form-group input {
     padding: 12px;
     font-size: 14px;
   }
-  
+
   .login-btn {
     padding: 12px;
     font-size: 14px;

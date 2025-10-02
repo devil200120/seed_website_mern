@@ -1,63 +1,122 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './LoginPage.css';
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { adminAPI, authUtils } from "../services/api";
+import "./LoginPage.css";
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
-    email: '',
-    password: ''
+    email: "",
+    password: "",
   });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  // Check if admin exists on component mount
+  useEffect(() => {
+    const checkAdminStatus = async () => {
+      try {
+        setInitialLoading(true);
+        const response = await adminAPI.checkSignupStatus();
+        const signupAllowed = response.data.data.signupAllowed;
+
+        if (signupAllowed) {
+          // No admin exists, redirect to signup
+          navigate("/admin/signup");
+        }
+        // If admin exists, component will continue to render login form
+      } catch (error) {
+        console.error("Failed to check admin status:", error);
+        setError("Failed to check system status. Please refresh the page.");
+        // Allow login attempt in case of error
+      } finally {
+        setInitialLoading(false);
+      }
+    };
+
+    // Check if user is already authenticated
+    if (authUtils.isAuthenticated()) {
+      navigate("/admin/dashboard");
+      return;
+    }
+
+    checkAdminStatus();
+  }, [navigate]);
 
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
-    setError(''); // Clear error when user types
+    setError(""); // Clear error when user types
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
-      // Demo admin credentials - replace with real authentication
-      const adminCredentials = {
-        email: 'admin@fieldtofeedexport.com',
-        password: 'admin123'
-      };
-
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      if (
-        formData.email === adminCredentials.email && 
-        formData.password === adminCredentials.password
-      ) {
-        // Set admin session
-        localStorage.setItem('adminToken', 'demo-admin-token-' + Date.now());
-        localStorage.setItem('isAdmin', 'true');
-        localStorage.setItem('adminEmail', formData.email);
-        
-        // Redirect to admin panel
-        navigate('/admin');
-      } else {
-        setError('Invalid email or password. Use admin@fieldtofeedexport.com / admin123');
+      // Validate form data
+      if (!formData.email || !formData.password) {
+        setError("Please enter both email and password.");
+        return;
       }
+
+      // Make API call to login
+      const response = await adminAPI.login({
+        email: formData.email,
+        password: formData.password,
+      });
+
+      // Store auth data
+      authUtils.setAuth(response.data.data.token, response.data.data.admin);
+
+      // Redirect to admin dashboard
+      navigate("/admin/dashboard");
     } catch (error) {
-      setError('Login failed. Please try again.');
+      console.error("Login error:", error);
+      if (error.response?.status === 401) {
+        setError("Invalid email or password.");
+      } else if (error.response?.status === 423) {
+        setError(
+          "Account is temporarily locked due to multiple failed login attempts. Please try again later."
+        );
+      } else {
+        setError(
+          error.response?.data?.message || "Login failed. Please try again."
+        );
+      }
     } finally {
       setLoading(false);
     }
   };
 
   const goHome = () => {
-    navigate('/');
+    navigate("/");
   };
+
+  // Show loading state while checking admin status
+  if (initialLoading) {
+    return (
+      <div className="login-page">
+        <div className="login-container">
+          <div className="login-header">
+            <div className="company-logo">
+              <h1>🌱</h1>
+              <h2>Field to Feed Export</h2>
+              <p>Checking system status...</p>
+            </div>
+          </div>
+          <div className="loading-state">
+            <div className="spinner"></div>
+            <p>Please wait...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="login-page">
@@ -97,28 +156,27 @@ const LoginPage = () => {
             />
           </div>
 
-          {error && (
-            <div className="error-message">
-              {error}
-            </div>
-          )}
+          {error && <div className="error-message">{error}</div>}
 
-          <button 
-            type="submit" 
-            className="login-btn"
-            disabled={loading}
-          >
-            {loading ? 'Logging in...' : 'Login to Admin Panel'}
+          <button type="submit" className="login-btn" disabled={loading}>
+            {loading ? "Logging in..." : "Login to Admin Panel"}
           </button>
         </form>
 
         <div className="login-footer">
-          <div className="demo-credentials">
-            <h4>Demo Admin Credentials:</h4>
-            <p><strong>Email:</strong> admin@fieldtofeedexport.com</p>
-            <p><strong>Password:</strong> admin123</p>
+          <div className="signup-link">
+            <p>
+              Need to set up admin account?{" "}
+              <button
+                type="button"
+                className="link-btn"
+                onClick={() => navigate("/admin/signup")}
+              >
+                Create Admin Account
+              </button>
+            </p>
           </div>
-          
+
           <button onClick={goHome} className="back-home-btn">
             ← Back to Website
           </button>

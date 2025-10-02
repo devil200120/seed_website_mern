@@ -6,6 +6,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import ScrollAnimations from "./components/ScrollAnimations";
 import ProtectedRoute from "./components/ProtectedRoute";
+import VendorProtectedRoute from "./components/VendorProtectedRoute";
 
 // Import pages
 import Home from "./pages/Home";
@@ -25,40 +26,70 @@ import ProductGallery from "./pages/ProductGallery";
 import Certifications from "./pages/Certifications";
 import Contact from "./pages/Contact";
 import LoginPage from "./pages/LoginPage";
+import AdminSignup from "./pages/AdminSignup";
 import AdminPanel from "./pages/AdminPanel";
+import VendorLogin from "./pages/VendorLogin";
+import VendorDashboardPage from "./pages/VendorDashboardPage";
 
 function App() {
   return (
     <>
       <Routes>
         {/* Admin Routes - No Header/Footer */}
-        <Route 
-          path="/admin" 
+        <Route
+          path="/admin/dashboard"
           element={
             <ProtectedRoute>
               <AdminPanel />
             </ProtectedRoute>
-          } 
+          }
         />
-        
-        {/* Login Route - No Header/Footer */}
+
+        {/* Admin Auth Routes - No Header/Footer */}
+        <Route path="/admin/login" element={<LoginPage />} />
+        <Route path="/admin/signup" element={<AdminSignup />} />
+
+        {/* Vendor Routes - No Header/Footer */}
+        <Route path="/vendor/login" element={<VendorLogin />} />
+        <Route path="/vendor/register" element={<VendorLogin />} />
+        <Route
+          path="/vendor/dashboard"
+          element={
+            <VendorProtectedRoute>
+              <VendorDashboardPage />
+            </VendorProtectedRoute>
+          }
+        />
+
+        {/* Legacy route redirect */}
         <Route path="/login" element={<LoginPage />} />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <AdminPanel />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Public Routes - With Header/Footer */}
-        <Route 
-          path="/*" 
+        <Route
+          path="/*"
           element={
             <>
               <ScrollAnimations />
               <Header />
-              
+
               <Routes>
                 <Route path="/" element={<Home />} />
 
                 {/* About Us Routes */}
                 <Route path="/about" element={<AboutUs />} />
                 <Route path="/about/our-story" element={<OurStory />} />
-                <Route path="/about/mission-vision" element={<MissionVision />} />
+                <Route
+                  path="/about/mission-vision"
+                  element={<MissionVision />}
+                />
                 <Route path="/about/our-team" element={<OurTeam />} />
 
                 {/* Services Routes */}
@@ -67,13 +98,25 @@ function App() {
                   path="/services/product-sourcing"
                   element={<ProductSourcing />}
                 />
-                <Route path="/services/quality-control" element={<QualityControl />} />
+                <Route
+                  path="/services/quality-control"
+                  element={<QualityControl />}
+                />
 
                 {/* Products Routes */}
                 <Route path="/products" element={<Products />} />
-                <Route path="/products/fresh-vegetables" element={<FreshVegetables />} />
-                <Route path="/products/fresh-fruits" element={<FreshFruits />} />
-                <Route path="/products/spices-herbs" element={<SpicesHerbs />} />
+                <Route
+                  path="/products/fresh-vegetables"
+                  element={<FreshVegetables />}
+                />
+                <Route
+                  path="/products/fresh-fruits"
+                  element={<FreshFruits />}
+                />
+                <Route
+                  path="/products/spices-herbs"
+                  element={<SpicesHerbs />}
+                />
 
                 {/* Gallery Routes */}
                 <Route path="/gallery" element={<Gallery />} />
@@ -86,7 +129,7 @@ function App() {
 
               <Footer />
             </>
-          } 
+          }
         />
       </Routes>
     </>
