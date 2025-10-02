@@ -8,17 +8,35 @@ dotenv.config();
  * Create email transporter
  */
 const createTransporter = () => {
-  return nodemailer.createTransport({
-    service: process.env.EMAIL_SERVICE || 'gmail',
+  const config = {
+    host: process.env.EMAIL_HOST || 'smtp.gmail.com',
+    port: parseInt(process.env.EMAIL_PORT) || 587,
+    secure: false, // Use STARTTLS instead of SSL
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS
     },
-    secure: true,
+    // Production-specific settings for Render
+    pool: true,
+    maxConnections: 1,
+    maxMessages: 3,
+    // Timeout settings for Render
+    connectionTimeout: 60000,   // 60 seconds
+    greetingTimeout: 30000,     // 30 seconds
+    socketTimeout: 60000,       // 60 seconds
+    // TLS settings
     tls: {
-      rejectUnauthorized: false
+      ciphers: 'SSLv3'
     }
-  });
+  };
+
+  // Add debug logging for production troubleshooting
+  if (process.env.NODE_ENV === 'production') {
+    config.debug = false;
+    config.logger = false;
+  }
+
+  return nodemailer.createTransporter(config);
 };
 
 /**
