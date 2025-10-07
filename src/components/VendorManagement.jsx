@@ -3,6 +3,7 @@ import { vendorAPI } from "../services/api";
 import "./VendorManagement.css";
 
 function VendorManagement() {
+  const [activeTab, setActiveTab] = useState("requests");
   const [vendors, setVendors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -20,6 +21,27 @@ function VendorManagement() {
   });
   const [selectedVendor, setSelectedVendor] = useState(null);
   const [showDetails, setShowDetails] = useState(false);
+
+  // Create Vendor Form State
+  const [createForm, setCreateForm] = useState({
+    businessName: "",
+    contactPerson: {
+      firstName: "",
+      lastName: "",
+    },
+    email: "",
+    password: "",
+    phone: "",
+    address: {
+      street: "",
+      city: "",
+      state: "",
+      country: "",
+      zipCode: "",
+    },
+    specializations: [],
+    businessType: "Manufacturer",
+  });
 
   const statusOptions = [
     { value: "all", label: "All Status" },
@@ -39,6 +61,27 @@ function VendorManagement() {
     { value: "Oil Seeds", label: "Oil Seeds" },
     { value: "Dairy Products", label: "Dairy Products" },
     { value: "Nuts & Dry Fruits", label: "Nuts & Dry Fruits" },
+  ];
+
+  const specializations = [
+    "Fresh Fruits",
+    "Fresh Vegetables",
+    "Grains & Cereals",
+    "Spices & Herbs",
+    "Pulses & Legumes",
+    "Oil Seeds",
+    "Dairy Products",
+    "Nuts & Dry Fruits",
+    "Other",
+  ];
+
+  const businessTypes = [
+    "Manufacturer",
+    "Exporter",
+    "Trader",
+    "Supplier",
+    "Farmer",
+    "Cooperative",
   ];
 
   useEffect(() => {
@@ -121,6 +164,66 @@ function VendorManagement() {
     fetchVendors();
   };
 
+  const handleCreateVendor = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    setSuccess("");
+
+    try {
+      const response = await vendorAPI.register(createForm);
+
+      if (response.data.success) {
+        setSuccess("Vendor created successfully and automatically approved!");
+        // Reset form
+        setCreateForm({
+          businessName: "",
+          contactPerson: {
+            firstName: "",
+            lastName: "",
+          },
+          email: "",
+          password: "",
+          phone: "",
+          address: {
+            street: "",
+            city: "",
+            state: "",
+            country: "",
+            zipCode: "",
+          },
+          specializations: [],
+          businessType: "Manufacturer",
+        });
+        // Switch to requests tab to see the new vendor
+        setActiveTab("requests");
+        fetchVendors();
+
+        setTimeout(() => setSuccess(""), 5000);
+      }
+    } catch (err) {
+      console.error("Error creating vendor:", err);
+      setError(
+        err.response?.data?.message || "Failed to create vendor. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSpecializationChange = (specialization) => {
+    const updatedSpecializations = createForm.specializations.includes(
+      specialization
+    )
+      ? createForm.specializations.filter((s) => s !== specialization)
+      : [...createForm.specializations, specialization];
+
+    setCreateForm({
+      ...createForm,
+      specializations: updatedSpecializations,
+    });
+  };
+
   const getStatusBadge = (status) => {
     const statusConfig = {
       pending: { class: "pending", icon: "⏳", label: "Pending" },
@@ -185,21 +288,31 @@ function VendorManagement() {
 
   return (
     <div className="vendor-management">
-      {/* Header */}
-      <div className="vendor-header">
-        <div className="header-content">
-          <h1>Vendor Management</h1>
-          <p>Manage vendor registrations, approvals, and account status</p>
-        </div>
-        <div className="header-actions">
-          <button onClick={fetchVendors} className="refresh-btn">
-            🔄 Refresh
-          </button>
-        </div>
+      {/* Tab Navigation */}
+      <div className="vendor-tabs">
+        <button
+          className={`tab-btn ${activeTab === "requests" ? "active" : ""}`}
+          onClick={() => setActiveTab("requests")}
+        >
+          📋 Request Vendor
+        </button>
+        <button
+          className={`tab-btn ${activeTab === "create" ? "active" : ""}`}
+          onClick={() => setActiveTab("create")}
+        >
+          ➕ Create Vendor
+        </button>
       </div>
 
-      {/* Stats Cards */}
-      <div className="vendor-stats">
+      {/* Messages */}
+      {error && <div className="error-message">{error}</div>}
+      {success && <div className="success-message">{success}</div>}
+
+      {/* Tab Content */}
+      {activeTab === "requests" ? (
+        <>
+          {/* Stats Cards */}
+          <div className="vendor-stats">
         <div className="stat-card total">
           <div className="stat-icon">👥</div>
           <div className="stat-content">
@@ -229,10 +342,6 @@ function VendorManagement() {
           </div>
         </div>
       </div>
-
-      {/* Messages */}
-      {error && <div className="error-message">{error}</div>}
-      {success && <div className="success-message">{success}</div>}
 
       {/* Filters */}
       <div className="vendor-filters">
@@ -447,169 +556,444 @@ function VendorManagement() {
         </div>
       )}
 
-      {/* Vendor Details Modal */}
-      {showDetails && selectedVendor && (
-        <div className="modal-overlay" onClick={() => setShowDetails(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3>Vendor Details</h3>
-              <button
-                onClick={() => setShowDetails(false)}
-                className="close-btn"
-              >
-                ×
-              </button>
+          {/* Vendor Details Modal */}
+          {showDetails && selectedVendor && (
+            <div className="modal-overlay" onClick={() => setShowDetails(false)}>
+              <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                <div className="modal-header">
+                  <h3>Vendor Details</h3>
+                  <button
+                    onClick={() => setShowDetails(false)}
+                    className="close-btn"
+                  >
+                    ×
+                  </button>
+                </div>
+
+                <div className="modal-body">
+                  <div className="vendor-details">
+                    <div className="detail-section">
+                      <h4>Business Information</h4>
+                      <div className="detail-grid">
+                        <div className="detail-item">
+                          <label>Business Name:</label>
+                          <span>{selectedVendor.businessName}</span>
+                        </div>
+                        <div className="detail-item">
+                          <label>Business Type:</label>
+                          <span>
+                            {selectedVendor.businessDetails?.businessType}
+                          </span>
+                        </div>
+                        <div className="detail-item">
+                          <label>Email:</label>
+                          <span>{selectedVendor.email}</span>
+                        </div>
+                        <div className="detail-item">
+                          <label>Phone:</label>
+                          <span>{selectedVendor.phone}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="detail-section">
+                      <h4>Contact Person</h4>
+                      <div className="detail-grid">
+                        <div className="detail-item">
+                          <label>Name:</label>
+                          <span>
+                            {selectedVendor.contactPerson?.firstName}{" "}
+                            {selectedVendor.contactPerson?.lastName}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="detail-section">
+                      <h4>Address</h4>
+                      <div className="detail-grid">
+                        <div className="detail-item">
+                          <label>Street:</label>
+                          <span>{selectedVendor.address?.street}</span>
+                        </div>
+                        <div className="detail-item">
+                          <label>City:</label>
+                          <span>{selectedVendor.address?.city}</span>
+                        </div>
+                        <div className="detail-item">
+                          <label>State:</label>
+                          <span>{selectedVendor.address?.state}</span>
+                        </div>
+                        <div className="detail-item">
+                          <label>Country:</label>
+                          <span>{selectedVendor.address?.country}</span>
+                        </div>
+                        <div className="detail-item">
+                          <label>ZIP Code:</label>
+                          <span>{selectedVendor.address?.zipCode}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="detail-section">
+                      <h4>Specializations</h4>
+                      <div className="specializations-list">
+                        {selectedVendor.specializations?.map((spec) => (
+                          <span key={spec} className="specialization-tag">
+                            {spec}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="detail-section">
+                      <h4>Account Status</h4>
+                      <div className="detail-grid">
+                        <div className="detail-item">
+                          <label>Status:</label>
+                          {getStatusBadge(selectedVendor.status)}
+                        </div>
+                        <div className="detail-item">
+                          <label>Verified:</label>
+                          <span>
+                            {selectedVendor.verified ? "✅ Yes" : "❌ No"}
+                          </span>
+                        </div>
+                        <div className="detail-item">
+                          <label>Joined:</label>
+                          <span>{formatDate(selectedVendor.joinedAt)}</span>
+                        </div>
+                        <div className="detail-item">
+                          <label>Last Active:</label>
+                          <span>{formatDate(selectedVendor.lastActive)}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="modal-footer">
+                  {selectedVendor.status === "pending" && (
+                    <div className="approval-actions">
+                      <button
+                        onClick={() =>
+                          handleStatusUpdate(selectedVendor._id, "approved")
+                        }
+                        className="approve-btn"
+                        disabled={loading}
+                      >
+                        ✅ Approve Vendor
+                      </button>
+                      <button
+                        onClick={() =>
+                          handleStatusUpdate(selectedVendor._id, "rejected")
+                        }
+                        className="reject-btn"
+                        disabled={loading}
+                      >
+                        ❌ Reject Vendor
+                      </button>
+                    </div>
+                  )}
+                  {selectedVendor.status === "approved" && (
+                    <button
+                      onClick={() =>
+                        handleStatusUpdate(selectedVendor._id, "suspended")
+                      }
+                      className="suspend-btn"
+                      disabled={loading}
+                    >
+                      ⚠️ Suspend Vendor
+                    </button>
+                  )}
+                  {selectedVendor.status === "suspended" && (
+                    <button
+                      onClick={() =>
+                        handleStatusUpdate(selectedVendor._id, "approved")
+                      }
+                      className="reactivate-btn"
+                      disabled={loading}
+                    >
+                      🔄 Reactivate Vendor
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+        </>
+      ) : (
+        /* Create Vendor Tab */
+        <div className="create-vendor-section">
+          <div className="create-vendor-header">
+            <h3>Create New Vendor</h3>
+            <p>Manually add a new vendor to the platform</p>
+          </div>
+
+          <form onSubmit={handleCreateVendor} className="create-vendor-form">
+            <div className="form-section">
+              <h4>Business Information</h4>
+
+              <div className="form-group">
+                <label>Business Name *</label>
+                <input
+                  type="text"
+                  required
+                  value={createForm.businessName}
+                  onChange={(e) =>
+                    setCreateForm({
+                      ...createForm,
+                      businessName: e.target.value,
+                    })
+                  }
+                  placeholder="Enter business name"
+                />
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Contact First Name *</label>
+                  <input
+                    type="text"
+                    required
+                    value={createForm.contactPerson.firstName}
+                    onChange={(e) =>
+                      setCreateForm({
+                        ...createForm,
+                        contactPerson: {
+                          ...createForm.contactPerson,
+                          firstName: e.target.value,
+                        },
+                      })
+                    }
+                    placeholder="First name"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Contact Last Name *</label>
+                  <input
+                    type="text"
+                    required
+                    value={createForm.contactPerson.lastName}
+                    onChange={(e) =>
+                      setCreateForm({
+                        ...createForm,
+                        contactPerson: {
+                          ...createForm.contactPerson,
+                          lastName: e.target.value,
+                        },
+                      })
+                    }
+                    placeholder="Last name"
+                  />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Email Address *</label>
+                  <input
+                    type="email"
+                    required
+                    value={createForm.email}
+                    onChange={(e) =>
+                      setCreateForm({
+                        ...createForm,
+                        email: e.target.value,
+                      })
+                    }
+                    placeholder="Enter email"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Phone Number *</label>
+                  <input
+                    type="tel"
+                    required
+                    value={createForm.phone}
+                    onChange={(e) =>
+                      setCreateForm({
+                        ...createForm,
+                        phone: e.target.value,
+                      })
+                    }
+                    placeholder="Enter phone number"
+                  />
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label>Password *</label>
+                <input
+                  type="password"
+                  required
+                  value={createForm.password}
+                  onChange={(e) =>
+                    setCreateForm({
+                      ...createForm,
+                      password: e.target.value,
+                    })
+                  }
+                  placeholder="Enter password (min 6 characters)"
+                  minLength="6"
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Business Type</label>
+                <select
+                  value={createForm.businessType}
+                  onChange={(e) =>
+                    setCreateForm({
+                      ...createForm,
+                      businessType: e.target.value,
+                    })
+                  }
+                >
+                  {businessTypes.map((type) => (
+                    <option key={type} value={type}>
+                      {type}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
 
-            <div className="modal-body">
-              <div className="vendor-details">
-                <div className="detail-section">
-                  <h4>Business Information</h4>
-                  <div className="detail-grid">
-                    <div className="detail-item">
-                      <label>Business Name:</label>
-                      <span>{selectedVendor.businessName}</span>
-                    </div>
-                    <div className="detail-item">
-                      <label>Business Type:</label>
-                      <span>
-                        {selectedVendor.businessDetails?.businessType}
-                      </span>
-                    </div>
-                    <div className="detail-item">
-                      <label>Email:</label>
-                      <span>{selectedVendor.email}</span>
-                    </div>
-                    <div className="detail-item">
-                      <label>Phone:</label>
-                      <span>{selectedVendor.phone}</span>
-                    </div>
-                  </div>
-                </div>
+            <div className="form-section">
+              <h4>Address Information</h4>
 
-                <div className="detail-section">
-                  <h4>Contact Person</h4>
-                  <div className="detail-grid">
-                    <div className="detail-item">
-                      <label>Name:</label>
-                      <span>
-                        {selectedVendor.contactPerson?.firstName}{" "}
-                        {selectedVendor.contactPerson?.lastName}
-                      </span>
-                    </div>
-                  </div>
-                </div>
+              <div className="form-group">
+                <label>Street Address *</label>
+                <input
+                  type="text"
+                  required
+                  value={createForm.address.street}
+                  onChange={(e) =>
+                    setCreateForm({
+                      ...createForm,
+                      address: {
+                        ...createForm.address,
+                        street: e.target.value,
+                      },
+                    })
+                  }
+                  placeholder="Enter street address"
+                />
+              </div>
 
-                <div className="detail-section">
-                  <h4>Address</h4>
-                  <div className="detail-grid">
-                    <div className="detail-item">
-                      <label>Street:</label>
-                      <span>{selectedVendor.address?.street}</span>
-                    </div>
-                    <div className="detail-item">
-                      <label>City:</label>
-                      <span>{selectedVendor.address?.city}</span>
-                    </div>
-                    <div className="detail-item">
-                      <label>State:</label>
-                      <span>{selectedVendor.address?.state}</span>
-                    </div>
-                    <div className="detail-item">
-                      <label>Country:</label>
-                      <span>{selectedVendor.address?.country}</span>
-                    </div>
-                    <div className="detail-item">
-                      <label>ZIP Code:</label>
-                      <span>{selectedVendor.address?.zipCode}</span>
-                    </div>
-                  </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label>City *</label>
+                  <input
+                    type="text"
+                    required
+                    value={createForm.address.city}
+                    onChange={(e) =>
+                      setCreateForm({
+                        ...createForm,
+                        address: {
+                          ...createForm.address,
+                          city: e.target.value,
+                        },
+                      })
+                    }
+                    placeholder="Enter city"
+                  />
                 </div>
-
-                <div className="detail-section">
-                  <h4>Specializations</h4>
-                  <div className="specializations-list">
-                    {selectedVendor.specializations?.map((spec) => (
-                      <span key={spec} className="specialization-tag">
-                        {spec}
-                      </span>
-                    ))}
-                  </div>
+                <div className="form-group">
+                  <label>State *</label>
+                  <input
+                    type="text"
+                    required
+                    value={createForm.address.state}
+                    onChange={(e) =>
+                      setCreateForm({
+                        ...createForm,
+                        address: {
+                          ...createForm.address,
+                          state: e.target.value,
+                        },
+                      })
+                    }
+                    placeholder="Enter state"
+                  />
                 </div>
+              </div>
 
-                <div className="detail-section">
-                  <h4>Account Status</h4>
-                  <div className="detail-grid">
-                    <div className="detail-item">
-                      <label>Status:</label>
-                      {getStatusBadge(selectedVendor.status)}
-                    </div>
-                    <div className="detail-item">
-                      <label>Verified:</label>
-                      <span>
-                        {selectedVendor.verified ? "✅ Yes" : "❌ No"}
-                      </span>
-                    </div>
-                    <div className="detail-item">
-                      <label>Joined:</label>
-                      <span>{formatDate(selectedVendor.joinedAt)}</span>
-                    </div>
-                    <div className="detail-item">
-                      <label>Last Active:</label>
-                      <span>{formatDate(selectedVendor.lastActive)}</span>
-                    </div>
-                  </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Country *</label>
+                  <input
+                    type="text"
+                    required
+                    value={createForm.address.country}
+                    onChange={(e) =>
+                      setCreateForm({
+                        ...createForm,
+                        address: {
+                          ...createForm.address,
+                          country: e.target.value,
+                        },
+                      })
+                    }
+                    placeholder="Enter country"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>ZIP Code *</label>
+                  <input
+                    type="text"
+                    required
+                    value={createForm.address.zipCode}
+                    onChange={(e) =>
+                      setCreateForm({
+                        ...createForm,
+                        address: {
+                          ...createForm.address,
+                          zipCode: e.target.value,
+                        },
+                      })
+                    }
+                    placeholder="Enter ZIP code"
+                  />
                 </div>
               </div>
             </div>
 
-            <div className="modal-footer">
-              {selectedVendor.status === "pending" && (
-                <div className="approval-actions">
-                  <button
-                    onClick={() =>
-                      handleStatusUpdate(selectedVendor._id, "approved")
-                    }
-                    className="approve-btn"
-                    disabled={loading}
-                  >
-                    ✅ Approve Vendor
-                  </button>
-                  <button
-                    onClick={() =>
-                      handleStatusUpdate(selectedVendor._id, "rejected")
-                    }
-                    className="reject-btn"
-                    disabled={loading}
-                  >
-                    ❌ Reject Vendor
-                  </button>
-                </div>
-              )}
-              {selectedVendor.status === "approved" && (
-                <button
-                  onClick={() =>
-                    handleStatusUpdate(selectedVendor._id, "suspended")
-                  }
-                  className="suspend-btn"
-                  disabled={loading}
-                >
-                  ⚠️ Suspend Vendor
-                </button>
-              )}
-              {selectedVendor.status === "suspended" && (
-                <button
-                  onClick={() =>
-                    handleStatusUpdate(selectedVendor._id, "approved")
-                  }
-                  className="reactivate-btn"
-                  disabled={loading}
-                >
-                  🔄 Reactivate Vendor
-                </button>
+            <div className="form-section">
+              <h4>Specializations *</h4>
+              <p className="form-helper">
+                Select the product categories this vendor specializes in:
+              </p>
+
+              <div className="specializations-grid">
+                {specializations.map((spec) => (
+                  <label key={spec} className="checkbox-label">
+                    <input
+                      type="checkbox"
+                      checked={createForm.specializations.includes(spec)}
+                      onChange={() => handleSpecializationChange(spec)}
+                    />
+                    <span>{spec}</span>
+                  </label>
+                ))}
+              </div>
+
+              {createForm.specializations.length === 0 && (
+                <p className="error-text">
+                  Please select at least one specialization
+                </p>
               )}
             </div>
-          </div>
+
+            <button
+              type="submit"
+              disabled={loading || createForm.specializations.length === 0}
+              className="submit-btn"
+            >
+              {loading ? "Creating Vendor..." : "Create Vendor"}
+            </button>
+          </form>
         </div>
       )}
     </div>

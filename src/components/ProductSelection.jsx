@@ -218,9 +218,9 @@ Thank you!`;
 
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
-    
+
     // Open WhatsApp in a new tab
-    window.open(whatsappUrl, '_blank');
+    window.open(whatsappUrl, "_blank");
   };
 
   const handleContactSubmit = async (e) => {
@@ -486,7 +486,7 @@ Thank you!`;
         <div className="products-selection-grid">
           {filteredProducts.map((product) => (
             <div key={product._id} className="product-selection-card">
-              <div className="product-header">
+              <div className="land-product-header">
                 {renderProductImage(product)}
                 <div
                   className="product-icon-fallback"
@@ -495,35 +495,11 @@ Thank you!`;
                   📦
                 </div>
                 <h3>{product.name}</h3>
-                <span className="product-category">{product.category}</span>
+                <span className="land-product-category">
+                  {product.category}
+                </span>
                 <div className="product-vendor">
                   by {product.vendor?.businessName || "Unknown Vendor"}
-                </div>
-                <div className="product-pricing">
-                  {(() => {
-                    const priceInfo = formatPrice(product);
-                    return (
-                      <>
-                        <div
-                          className={`current-price ${
-                            priceInfo.isCurrentPrice ? "highlight" : ""
-                          }`}
-                        >
-                          <span className="price-value">{priceInfo.price}</span>
-                          <span className="price-unit">per {product.unit}</span>
-                        </div>
-                        {priceInfo.isCurrentPrice &&
-                          priceInfo.originalPrice && (
-                            <div className="price-range">
-                              Range: {priceInfo.originalPrice}
-                            </div>
-                          )}
-                        {priceInfo.isCurrentPrice && (
-                          <div className="price-badge">Current Price</div>
-                        )}
-                      </>
-                    );
-                  })()}
                 </div>
               </div>
 
@@ -616,14 +592,16 @@ Thank you!`;
                 onClick={() => {
                   const message = `Hello! I'm interested in getting a quote for the following products from Field to Feed Export:
 
-${selectedProducts.map(product => `• ${product.name}: ${product.quantity} ${product.unit}`).join('\n')}
+${selectedProducts
+  .map((product) => `• ${product.name}: ${product.quantity} ${product.unit}`)
+  .join("\n")}
 
 Please provide me with pricing and availability information.
 
 Thank you!`;
                   const encodedMessage = encodeURIComponent(message);
                   const whatsappUrl = `https://wa.me/14319906055?text=${encodedMessage}`;
-                  window.open(whatsappUrl, '_blank');
+                  window.open(whatsappUrl, "_blank");
                 }}
               >
                 💬 Quick WhatsApp Chat

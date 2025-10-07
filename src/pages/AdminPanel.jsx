@@ -1,8 +1,8 @@
 import { useState } from "react";
-import AllOrders from "../components/AllOrders";
 import AdminDashboard from "../components/AdminDashboard";
-import AdminStats from "../components/AdminStats";
 import VendorManagement from "../components/VendorManagement";
+import QuotationManagement from "../components/QuotationManagement";
+import CustomerManagement from "../components/CustomerManagement";
 import "./AdminPanel.css";
 
 function AdminPanel() {
@@ -18,42 +18,24 @@ function AdminPanel() {
       gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
     },
     {
-      id: "all-orders",
-      label: "Orders",
-      icon: "📋",
-      component: AllOrders,
-      gradient: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+      id: "quotations",
+      label: "Quotations",
+      icon: "📝",
+      component: QuotationManagement,
+      gradient: "linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)",
     },
     {
       id: "vendors",
-      label: "Vendors",
+      label: "Vendors Management",
       icon: "🏪",
       component: VendorManagement,
       gradient: "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)",
     },
     {
-      id: "analytics",
-      label: "Analytics",
-      icon: "📊",
-      component: AdminStats,
-      gradient: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
-    },
-    {
-      id: "products",
-      label: "Products",
-      icon: "�",
-      component: () => (
-        <div className="coming-soon">Products Management - Coming Soon!</div>
-      ),
-      gradient: "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)",
-    },
-    {
       id: "customers",
-      label: "Customers",
-      icon: "�",
-      component: () => (
-        <div className="coming-soon">Customer Management - Coming Soon!</div>
-      ),
+      label: "Customers Management",
+      icon: "👥",
+      component: CustomerManagement,
       gradient: "linear-gradient(135deg, #fa709a 0%, #fee140 100%)",
     },
   ];
@@ -66,7 +48,7 @@ function AdminPanel() {
     localStorage.removeItem("adminToken");
     localStorage.removeItem("isAdmin");
     // Redirect to login or home page
-    window.location.href = "/login";
+    window.location.href = "/";
   };
 
   return (

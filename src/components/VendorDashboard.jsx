@@ -318,13 +318,6 @@ function VendorDashboard() {
             <span className="nav-badge">{products.length}</span>
           </button>
           <button
-            className={`nav-item ${activeTab === "analytics" ? "active" : ""}`}
-            onClick={() => setActiveTab("analytics")}
-          >
-            <span className="nav-icon">📈</span>
-            <span>Analytics</span>
-          </button>
-          <button
             className={`nav-item ${activeTab === "profile" ? "active" : ""}`}
             onClick={() => setActiveTab("profile")}
           >
@@ -419,16 +412,6 @@ function VendorDashboard() {
                   <div className="action-content">
                     <h4>Manage Products</h4>
                     <p>Edit existing products and inventory</p>
-                  </div>
-                </button>
-                <button
-                  className="action-card"
-                  onClick={() => setActiveTab("analytics")}
-                >
-                  <div className="action-icon">📊</div>
-                  <div className="action-content">
-                    <h4>View Analytics</h4>
-                    <p>Check your performance metrics</p>
                   </div>
                 </button>
               </div>
@@ -573,54 +556,6 @@ function VendorDashboard() {
                 </button>
               </div>
             )}
-          </div>
-        )}
-
-        {/* Analytics Tab */}
-        {activeTab === "analytics" && (
-          <div className="analytics-section">
-            <div className="section-header">
-              <h2>Analytics & Insights</h2>
-              <p>Track your performance and growth metrics</p>
-            </div>
-
-            <div className="analytics-content">
-              <div className="analytics-card">
-                <h3>📊 Performance Overview</h3>
-                <div className="metrics-grid">
-                  <div className="metric">
-                    <span className="metric-label">Product Views</span>
-                    <span className="metric-value">{stats.totalViews}</span>
-                    <span className="metric-change positive">+24%</span>
-                  </div>
-                  <div className="metric">
-                    <span className="metric-label">Inquiries</span>
-                    <span className="metric-value">42</span>
-                    <span className="metric-change positive">+18%</span>
-                  </div>
-                  <div className="metric">
-                    <span className="metric-label">Conversion Rate</span>
-                    <span className="metric-value">3.2%</span>
-                    <span className="metric-change positive">+0.5%</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="analytics-card">
-                <h3>🎯 Top Performing Products</h3>
-                <div className="top-products">
-                  {products.slice(0, 3).map((product, index) => (
-                    <div key={product._id} className="top-product-item">
-                      <span className="rank">#{index + 1}</span>
-                      <span className="product-name">{product.name}</span>
-                      <span className="views">
-                        {Math.floor(Math.random() * 50) + 20} views
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
           </div>
         )}
 

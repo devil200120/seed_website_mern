@@ -597,9 +597,9 @@
 }
 
 .product-icon {
-  width: 80px;
-  height: 80px;
-  background: #f7fafc;
+  width: 60px;
+  height: 60px;
+  background: #f5fbff;
   border-radius: 12px;
   display: flex;
   align-items: center;

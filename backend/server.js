@@ -11,6 +11,7 @@ import licenseRoutes from './routes/licenseRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import vendorRoutes from './routes/vendorRoutes.js';
 import productRoutes from './routes/productRoutes.js';
+import customerRoutes from './routes/customerRoutes.js';
 
 // Load environment variables
 dotenv.config();
@@ -56,6 +57,7 @@ app.use('/api/license', licenseRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/vendors', vendorRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/customers', customerRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

@@ -9,7 +9,9 @@ const api = axios.create({
 // Request interceptor to add auth token
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('adminToken') || localStorage.getItem('vendorToken');
+    const token = localStorage.getItem('adminToken') || 
+                  localStorage.getItem('vendorToken') || 
+                  localStorage.getItem('customerToken');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -36,8 +38,12 @@ api.interceptors.response.use(
       localStorage.removeItem('adminData');
       localStorage.removeItem('vendorToken');
       localStorage.removeItem('vendorData');
+      localStorage.removeItem('customerToken');
+      localStorage.removeItem('customerData');
       // Don't redirect if on public pages
-      if (window.location.pathname.includes('/admin/') || window.location.pathname.includes('/vendor/')) {
+      if (window.location.pathname.includes('/admin/') || 
+          window.location.pathname.includes('/vendor/') ||
+          window.location.pathname.includes('/customer/')) {
         window.location.href = '/admin/login';
       }
     }
@@ -178,6 +184,39 @@ export const productAPI = {
   deleteProduct: (productId) => api.delete(`/products/${productId}`)
 };
 
+export const customerAPI = {
+  // Customer registration
+  register: (customerData) => api.post('/customers/register', customerData),
+  
+  // Customer login
+  login: (credentials) => api.post('/customers/login', credentials),
+  
+  // Verify customer email
+  verifyEmail: (token) => api.get(`/customers/verify/${token}`),
+  
+  // Get customer profile
+  getProfile: () => api.get('/customers/profile'),
+  
+  // Update customer profile
+  updateProfile: (data) => api.put('/customers/profile', data),
+  
+  // Forgot password
+  forgotPassword: (email) => api.post('/customers/forgot-password', { email }),
+  
+  // Reset password
+  resetPassword: (token, password) => api.post(`/customers/reset-password/${token}`, { password }),
+  
+  // Get all customers (Admin only)
+  getAllCustomers: (params = {}) => api.get('/customers', { params }),
+  
+  // Update customer status (Admin only)
+  updateCustomerStatus: (customerId, status) => 
+    api.put(`/customers/${customerId}/status`, { status }),
+  
+  // Delete customer (Admin only)
+  deleteCustomer: (customerId) => api.delete(`/customers/${customerId}`)
+};
+
 // Auth helper functions
 export const authUtils = {
   // Set authentication data
@@ -190,6 +229,12 @@ export const authUtils = {
   setVendorAuth: (token, vendorData) => {
     localStorage.setItem('vendorToken', token);
     localStorage.setItem('vendorData', JSON.stringify(vendorData));
+  },
+  
+  // Set customer authentication data
+  setCustomerAuth: (token, customerData) => {
+    localStorage.setItem('customerToken', token);
+    localStorage.setItem('customerData', JSON.stringify(customerData));
   },
   
   // Get authentication data
@@ -212,6 +257,16 @@ export const authUtils = {
     };
   },
   
+  // Get customer authentication data
+  getCustomerAuth: () => {
+    const token = localStorage.getItem('customerToken');
+    const customerData = localStorage.getItem('customerData');
+    return {
+      token,
+      customer: customerData ? JSON.parse(customerData) : null
+    };
+  },
+  
   // Check if user is authenticated
   isAuthenticated: () => {
     const token = localStorage.getItem('adminToken');
@@ -221,6 +276,12 @@ export const authUtils = {
   // Check if vendor is authenticated
   isVendorAuthenticated: () => {
     const token = localStorage.getItem('vendorToken');
+    return !!token;
+  },
+  
+  // Check if customer is authenticated
+  isCustomerAuthenticated: () => {
+    const token = localStorage.getItem('customerToken');
     return !!token;
   },
   
@@ -236,12 +297,20 @@ export const authUtils = {
     localStorage.removeItem('vendorData');
   },
   
+  // Clear customer authentication data
+  clearCustomerAuth: () => {
+    localStorage.removeItem('customerToken');
+    localStorage.removeItem('customerData');
+  },
+  
   // Clear all authentication data
   clearAllAuth: () => {
     localStorage.removeItem('adminToken');
     localStorage.removeItem('adminData');
     localStorage.removeItem('vendorToken');
     localStorage.removeItem('vendorData');
+    localStorage.removeItem('customerToken');
+    localStorage.removeItem('customerData');
   }
 };
 

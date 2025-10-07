@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeDropdown, setActiveDropdown] = useState(null);
+  const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const location = useLocation();
@@ -12,58 +12,58 @@ function Header() {
   const isHomePage = location.pathname === '/';
 
   // Handle scroll effect for navigation visibility
-  useEffect(() => {
-    let lastScrollY = window.scrollY;
-    let ticking = false;
+  // useEffect(() => {
+  //   let lastScrollY = window.scrollY;
+  //   let ticking = false;
 
-    const updateScrolled = () => {
-      const scrollY = window.scrollY;
+  //   const updateScrolled = () => {
+  //     const scrollY = window.scrollY;
       
-      if (isHomePage) {
-        // On home page: hide nav initially, show when scrolling down
-        if (scrollY > 100) {
-          setIsScrolled(true);
-          // Show nav when scrolling down, hide when scrolling up fast
-          if (scrollY > lastScrollY && scrollY > 200) {
-            setIsVisible(false);
-          } else {
-            setIsVisible(true);
-          }
-        } else {
-          setIsScrolled(false);
-          setIsVisible(false); // Hide when at top of home page
-        }
-      } else {
-        // On other pages: always show nav
-        setIsScrolled(scrollY > 100);
-        setIsVisible(true);
-      }
+  //     if (isHomePage) {
+  //       // On home page: hide nav initially, show when scrolling down
+  //       if (scrollY > 100) {
+  //         setIsScrolled(true);
+  //         // Show nav when scrolling down, hide when scrolling up fast
+  //         if (scrollY > lastScrollY && scrollY > 200) {
+  //           setIsVisible(false);
+  //         } else {
+  //           setIsVisible(true);
+  //         }
+  //       } else {
+  //         setIsScrolled(false);
+  //         setIsVisible(false); // Hide when at top of home page
+  //       }
+  //     } else {
+  //       // On other pages: always show nav
+  //       setIsScrolled(scrollY > 100);
+  //       setIsVisible(true);
+  //     }
       
-      lastScrollY = scrollY;
-      ticking = false;
-    };
+  //     lastScrollY = scrollY;
+  //     ticking = false;
+  //   };
 
-    const requestTick = () => {
-      if (!ticking) {
-        requestAnimationFrame(updateScrolled);
-        ticking = true;
-      }
-    };
+  //   const requestTick = () => {
+  //     if (!ticking) {
+  //       requestAnimationFrame(updateScrolled);
+  //       ticking = true;
+  //     }
+  //   };
 
-    const onScroll = () => requestTick();
+  //   const onScroll = () => requestTick();
 
-    // Set initial state
-    if (isHomePage) {
-      setIsVisible(window.scrollY > 100);
-      setIsScrolled(window.scrollY > 100);
-    } else {
-      setIsVisible(true);
-      setIsScrolled(window.scrollY > 100);
-    }
+  //   // Set initial state
+  //   if (isHomePage) {
+  //     setIsVisible(window.scrollY > 100);
+  //     setIsScrolled(window.scrollY > 100);
+  //   } else {
+  //     setIsVisible(true);
+  //     setIsScrolled(window.scrollY > 100);
+  //   }
 
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [isHomePage]);
+  //   window.addEventListener("scroll", onScroll);
+  //   return () => window.removeEventListener("scroll", onScroll);
+  // }, [isHomePage]);
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -74,13 +74,18 @@ function Header() {
         !event.target.closest(".hamburger")
       ) {
         setIsMenuOpen(false);
-        setActiveDropdown(null);
+      }
+      if (
+        isRegisterOpen &&
+        !event.target.closest(".register-dropdown")
+      ) {
+        setIsRegisterOpen(false);
       }
     };
 
     document.addEventListener("click", handleClickOutside);
     return () => document.removeEventListener("click", handleClickOutside);
-  }, [isMenuOpen]);
+  }, [isMenuOpen, isRegisterOpen]);
 
   // Prevent body scroll when menu is open
   useEffect(() => {
@@ -97,29 +102,22 @@ function Header() {
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
-    setActiveDropdown(null);
-  };
-
-  const toggleDropdown = (dropdown, event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    setActiveDropdown(activeDropdown === dropdown ? null : dropdown);
   };
 
   const closeMenu = () => {
     setIsMenuOpen(false);
-    setActiveDropdown(null);
   };
 
-  // Check if device is mobile
-  const isMobile = () => window.innerWidth <= 768;
+  const toggleRegister = () => {
+    setIsRegisterOpen(!isRegisterOpen);
+  };
 
   return (
     <>
       <header 
         className={`header ${isScrolled ? 'header-scrolled' : ''} ${isVisible ? 'header-visible' : 'header-hidden'} ${isHomePage ? 'header-home' : ''}`}
       >
-        <div className="container">
+        <div className="container header-container">
           <div className="logo">
             <div className="logo-img">F</div>
             <Link to="/" className="logo-text" onClick={closeMenu}>
@@ -128,6 +126,9 @@ function Header() {
           </div>
 
           <nav className={`nav ${isMenuOpen ? "nav-open" : ""}`}>
+            <button className="nav-close" onClick={closeMenu} aria-label="Close menu">
+              ✕
+            </button>
             <ul>
               <li>
                 <Link to="/" onClick={closeMenu}>
@@ -135,94 +136,22 @@ function Header() {
                 </Link>
               </li>
 
-              <li className={`dropdown ${activeDropdown === "about" ? "active" : ""}`}>
-                <div
-                  className="dropdown-trigger"
-                  onClick={(e) => {
-                    if (isMobile()) {
-                      toggleDropdown("about", e);
-                    } else {
-                      window.location.href = "/about";
-                    }
-                  }}
-                >
+              <li>
+                <Link to="/about" onClick={closeMenu}>
                   About Us
-                  <span className="dropdown-arrow">▼</span>
-                </div>
-                <div className="dropdown-content">
-                  <Link to="/about" onClick={closeMenu}>
-                    Our Story
-                  </Link>
-                  <Link to="/about/mission-vision" onClick={closeMenu}>
-                    Mission & Vision
-                  </Link>
-                  <Link to="/about/our-team" onClick={closeMenu}>
-                    Our Team
-                  </Link>
-                  <Link to="/about" onClick={closeMenu}>
-                    Company Profile
-                  </Link>
-                </div>
+                </Link>
               </li>
 
-              <li className={`dropdown ${activeDropdown === "services" ? "active" : ""}`}>
-                <div
-                  className="dropdown-trigger"
-                  onClick={(e) => {
-                    if (isMobile()) {
-                      toggleDropdown("services", e);
-                    } else {
-                      window.location.href = "/services";
-                    }
-                  }}
-                >
+              <li>
+                <Link to="/services" onClick={closeMenu}>
                   Services
-                  <span className="dropdown-arrow">▼</span>
-                </div>
-                <div className="dropdown-content">
-                  <Link to="/services/product-sourcing" onClick={closeMenu}>
-                    Product Sourcing
-                  </Link>
-                  <Link to="/services/quality-control" onClick={closeMenu}>
-                    Quality Control
-                  </Link>
-                  <Link to="/services" onClick={closeMenu}>
-                    Export Documentation
-                  </Link>
-                  <Link to="/services" onClick={closeMenu}>
-                    Logistics & Shipping
-                  </Link>
-                </div>
+                </Link>
               </li>
 
-              <li className={`dropdown ${activeDropdown === "products" ? "active" : ""}`}>
-                <div
-                  className="dropdown-trigger"
-                  onClick={(e) => {
-                    if (isMobile()) {
-                      toggleDropdown("products", e);
-                    } else {
-                      window.location.href = "/products";
-                    }
-                  }}
-                >
+              <li>
+                <Link to="/products" onClick={closeMenu}>
                   Products
-                  <span className="dropdown-arrow">▼</span>
-                </div>
-                <div className="dropdown-content">
-                  <Link to="/products/fresh-vegetables" onClick={closeMenu}>
-                    Fresh Vegetables
-                  </Link>
-                  <Link to="/products/fresh-fruits" onClick={closeMenu}>
-                    Fresh Fruits
-                  </Link>
-                  <Link to="/products/spices-herbs" onClick={closeMenu}>
-                    Spices & Herbs
-                  </Link>
-                  <Link to="/products" onClick={closeMenu}>
-                    Grains & Cereals
-                  </Link>
-                </div>
+                </Link>
               </li>
 
               <li>
@@ -231,31 +160,10 @@ function Header() {
                 </Link>
               </li>
 
-              <li className={`dropdown ${activeDropdown === "quality" ? "active" : ""}`}>
-                <div
-                  className="dropdown-trigger"
-                  onClick={(e) => {
-                    if (isMobile()) {
-                      toggleDropdown("quality", e);
-                    } else {
-                      window.location.href = "/certifications";
-                    }
-                  }}
-                >
+              <li>
+                <Link to="/certifications" onClick={closeMenu}>
                   Quality
-                  <span className="dropdown-arrow">▼</span>
-                </div>
-                <div className="dropdown-content">
-                  <Link to="/certifications" onClick={closeMenu}>
-                    Certifications
-                  </Link>
-                  <Link to="/certifications" onClick={closeMenu}>
-                    Quality Standards
-                  </Link>
-                  <Link to="/certifications" onClick={closeMenu}>
-                    Food Safety
-                  </Link>
-                </div>
+                </Link>
               </li>
 
               <li>
@@ -264,12 +172,46 @@ function Header() {
                 </Link>
               </li>
             </ul>
+
+            {/* Register/Login section inside mobile menu */}
+            <div className="nav-register-section">
+              <div className="nav-register-divider"></div>
+              <div className="nav-register-links">
+                <Link to="/customer-register" className="nav-register-link" onClick={closeMenu}>
+                  <span className="register-icon">👤</span>
+                  Customer Register
+                </Link>
+                <Link to="/vendor-register" className="nav-register-link" onClick={closeMenu}>
+                  <span className="register-icon">🏪</span>
+                  Vendor Register
+                </Link>
+              </div>
+            </div>
           </nav>
 
           <div className="header-right">
             <div className="contact-info">
               <span>📞 +91 98765 43210</span>
               <span>✉️ info@fieldtofeedexport.com</span>
+            </div>
+            <div className={`register-dropdown ${isRegisterOpen ? "active" : ""}`}>
+              <button
+                className="register-btn"
+                onClick={toggleRegister}
+                aria-label="Register or Login"
+              >
+                Register/Login
+              </button>
+              {isRegisterOpen && (
+                <div className="register-dropdown-content">
+                  <Link to="/customer-register" className="register-option" onClick={() => setIsRegisterOpen(false)}>
+                    Customer Register
+                  </Link>
+                  <Link to="/vendor-register" className="register-option" onClick={() => setIsRegisterOpen(false)}>
+                    Vendor Register
+                  </Link>
+                </div>
+              )}
             </div>
             <button
               className={`hamburger ${isMenuOpen ? "active" : ""}`}

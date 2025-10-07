@@ -276,3 +276,104 @@ export const validateOrderCreation = [
   
   handleValidationErrors
 ];
+
+/**
+ * Customer registration validation
+ */
+export const validateCustomerRegistration = [
+  body('fullName')
+    .trim()
+    .notEmpty()
+    .withMessage('Full name is required')
+    .isLength({ min: 2, max: 100 })
+    .withMessage('Full name must be between 2 and 100 characters'),
+  
+  body('email')
+    .isEmail()
+    .normalizeEmail()
+    .withMessage('Please provide a valid email address')
+    .isLength({ max: 100 })
+    .withMessage('Email must be less than 100 characters'),
+  
+  body('password')
+    .isLength({ min: 8 })
+    .withMessage('Password must be at least 8 characters long')
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
+    .withMessage('Password must contain at least one uppercase letter, one lowercase letter, and one number'),
+  
+  body('phone')
+    .matches(/^\+?[\d\s\-\(\)]+$/)
+    .withMessage('Please provide a valid phone number'),
+  
+  body('country')
+    .trim()
+    .notEmpty()
+    .withMessage('Country is required'),
+  
+  handleValidationErrors
+];
+
+/**
+ * Customer login validation
+ */
+export const validateCustomerLogin = [
+  body('email')
+    .isEmail()
+    .normalizeEmail()
+    .withMessage('Please provide a valid email address'),
+  
+  body('password')
+    .notEmpty()
+    .withMessage('Password is required'),
+  
+  handleValidationErrors
+];
+
+/**
+ * Customer profile update validation
+ */
+export const validateCustomerUpdate = [
+  body('fullName')
+    .optional()
+    .trim()
+    .isLength({ min: 2, max: 100 })
+    .withMessage('Full name must be between 2 and 100 characters'),
+  
+  body('phone')
+    .optional()
+    .matches(/^\+?[\d\s\-\(\)]+$/)
+    .withMessage('Please provide a valid phone number'),
+  
+  body('company')
+    .optional()
+    .trim()
+    .isLength({ max: 100 })
+    .withMessage('Company name must be less than 100 characters'),
+  
+  handleValidationErrors
+];
+
+/**
+ * Forgot password validation
+ */
+export const validateForgotPassword = [
+  body('email')
+    .isEmail()
+    .normalizeEmail()
+    .withMessage('Please provide a valid email address'),
+  
+  handleValidationErrors
+];
+
+/**
+ * Reset password validation
+ */
+export const validateResetPassword = [
+  body('password')
+    .isLength({ min: 8 })
+    .withMessage('Password must be at least 8 characters long')
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
+    .withMessage('Password must contain at least one uppercase letter, one lowercase letter, and one number'),
+  
+  handleValidationErrors
+];
