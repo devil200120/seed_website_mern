@@ -172,46 +172,12 @@ function Header() {
                 </Link>
               </li>
             </ul>
-
-            {/* Register/Login section inside mobile menu */}
-            <div className="nav-register-section">
-              <div className="nav-register-divider"></div>
-              <div className="nav-register-links">
-                <Link to="/customer-register" className="nav-register-link" onClick={closeMenu}>
-                  <span className="register-icon">👤</span>
-                  Customer Register
-                </Link>
-                <Link to="/vendor-register" className="nav-register-link" onClick={closeMenu}>
-                  <span className="register-icon">🏪</span>
-                  Vendor Register
-                </Link>
-              </div>
-            </div>
           </nav>
 
           <div className="header-right">
             <div className="contact-info">
               <span>📞 +91 98765 43210</span>
               <span>✉️ info@fieldtofeedexport.com</span>
-            </div>
-            <div className={`register-dropdown ${isRegisterOpen ? "active" : ""}`}>
-              <button
-                className="register-btn"
-                onClick={toggleRegister}
-                aria-label="Register or Login"
-              >
-                Register/Login
-              </button>
-              {isRegisterOpen && (
-                <div className="register-dropdown-content">
-                  <Link to="/customer-register" className="register-option" onClick={() => setIsRegisterOpen(false)}>
-                    Customer Register
-                  </Link>
-                  <Link to="/vendor-register" className="register-option" onClick={() => setIsRegisterOpen(false)}>
-                    Vendor Register
-                  </Link>
-                </div>
-              )}
             </div>
             <button
               className={`hamburger ${isMenuOpen ? "active" : ""}`}

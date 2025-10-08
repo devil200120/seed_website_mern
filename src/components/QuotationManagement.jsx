@@ -17,6 +17,77 @@ function QuotationManagement() {
   const [updatingQuote, setUpdatingQuote] = useState(false);
   const [message, setMessage] = useState("");
 
+  const downloadCSV = () => {
+    // Prepare CSV data
+    const csvRows = [];
+    
+    // Add headers
+    const headers = [
+      "Order Number",
+      "Customer Name",
+      "Email",
+      "Phone",
+      "Company",
+      "Products",
+      "Delivery Address",
+      "Status",
+      "Special Requirements",
+      "Order Date"
+    ];
+    csvRows.push(headers.join(","));
+
+    // Add data rows
+    filteredOrders.forEach(order => {
+      const products = order.products
+        ?.map(p => `${p.name} (${p.quantity} ${p.unit})`)
+        .join("; ") || "N/A";
+      
+      const address = order.deliveryAddress
+        ? `${order.deliveryAddress.street}, ${order.deliveryAddress.city}, ${order.deliveryAddress.state}, ${order.deliveryAddress.country} ${order.deliveryAddress.zipCode}`
+        : "N/A";
+
+      const row = [
+        order.orderNumber || "N/A",
+        `"${order.customerInfo?.name || "N/A"}"`,
+        order.customerInfo?.email || "N/A",
+        order.customerInfo?.phone || "N/A",
+        `"${order.customerInfo?.company || "N/A"}"`,
+        `"${products}"`,
+        `"${address}"`,
+        order.status || "N/A",
+        `"${order.requirements?.replace(/"/g, '""') || "N/A"}"`,
+        new Date(order.createdAt).toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        })
+      ];
+      csvRows.push(row.join(","));
+    });
+
+    // Create CSV content
+    const csvContent = csvRows.join("\n");
+
+    // Create blob and download
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    
+    link.setAttribute("href", url);
+    link.setAttribute(
+      "download",
+      `quotations_${new Date().toISOString().split("T")[0]}.csv`
+    );
+    link.style.visibility = "hidden";
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    setMessage("✅ CSV file downloaded successfully!");
+    setTimeout(() => setMessage(""), 3000);
+  };
+
   useEffect(() => {
     fetchOrders();
   }, [filterStatus, searchTerm]);
@@ -194,9 +265,14 @@ function QuotationManagement() {
           <h2>Quotation Management</h2>
           <p>Review order requests and send quotations to buyers</p>
         </div>
-        <button className="refresh-btn" onClick={fetchOrders}>
-          🔄 Refresh
-        </button>
+        <div className="header-actions">
+          <button className="download-btn" onClick={downloadCSV}>
+            📥 Download Data
+          </button>
+          <button className="refresh-btn" onClick={fetchOrders}>
+            🔄 Refresh
+          </button>
+        </div>
       </div>
 
       {message && (
@@ -328,11 +404,6 @@ function QuotationManagement() {
                         <span className="product-quantity">
                           {product.quantity} {product.unit}
                         </span>
-                        {product.estimatedPrice && (
-                          <span className="product-price">
-                            ${product.estimatedPrice.toLocaleString()}
-                          </span>
-                        )}
                       </div>
                     ))}
                   </div>
@@ -355,23 +426,6 @@ function QuotationManagement() {
                     <p className="requirements-text">{order.requirements}</p>
                   </div>
                 )}
-
-                <div className="pricing-section">
-                  <div className="price-row">
-                    <span className="price-label">Estimated Total:</span>
-                    <span className="price-value">
-                      ${order.estimatedTotal?.toLocaleString() || "N/A"}
-                    </span>
-                  </div>
-                  {order.quotedPrice && (
-                    <div className="price-row">
-                      <span className="price-label">Quoted Price:</span>
-                      <span className="price-value quoted">
-                        ${order.quotedPrice.toLocaleString()}
-                      </span>
-                    </div>
-                  )}
-                </div>
               </div>
 
               <div className="quotation-card-footer">
@@ -411,12 +465,6 @@ function QuotationManagement() {
                   <div className="summary-item">
                     <span>Total Items:</span>
                     <strong>{selectedOrder.products?.length || 0}</strong>
-                  </div>
-                  <div className="summary-item">
-                    <span>Estimated Total:</span>
-                    <strong>
-                      ${selectedOrder.estimatedTotal?.toLocaleString() || "N/A"}
-                    </strong>
                   </div>
                 </div>
               </div>
