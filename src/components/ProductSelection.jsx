@@ -309,7 +309,7 @@ Thank you!`;
         const orderNumber = response.data.data.order.orderNumber;
         const estimatedTotal = response.data.data.order.estimatedTotal;
         setSubmitMessage(
-          `✅ Order ${orderNumber} submitted successfully! Estimated total: $${estimatedTotal.toLocaleString()}. You will receive a confirmation email with quote details. Redirecting to WhatsApp for further assistance...`
+          `✅ Order ${orderNumber} submitted successfully! You will receive a confirmation email with quote details. Redirecting to WhatsApp for further assistance...`
         );
 
         // Redirect to WhatsApp after 2 seconds
@@ -786,21 +786,6 @@ Thank you!`;
                   <div className="selected-products-in-form">
                     <h4>Selected Products:</h4>
                     {selectedProducts.map((product) => {
-                      let unitPrice = 0;
-
-                      if (product.currentPrice && product.currentPrice > 0) {
-                        unitPrice = product.currentPrice;
-                      } else if (
-                        product.priceRange &&
-                        product.priceRange.min &&
-                        product.priceRange.max
-                      ) {
-                        unitPrice =
-                          (product.priceRange.min + product.priceRange.max) / 2;
-                      }
-
-                      const lineTotal = unitPrice * product.quantity;
-
                       return (
                         <div key={product._id} className="product-in-form">
                           <div className="product-line">
@@ -808,65 +793,34 @@ Thank you!`;
                             <span className="product-quantity">
                               {product.quantity} {product.unit}
                             </span>
-                            <span className="product-price">
-                              ${unitPrice.toLocaleString()}/{product.unit}
-                            </span>
-                            <span className="line-total">
-                              ${lineTotal.toLocaleString()}
-                            </span>
                           </div>
                         </div>
                       );
                     })}
 
-                    {selectedProducts.length > 0 &&
-                      (() => {
-                        const priceDetails = getPriceDetails();
-                        return (
-                          <div className="price-summary">
-                            <div className="price-row">
-                              <span>Subtotal:</span>
-                              <span>${priceDetails.subtotal}</span>
-                            </div>
-                            <div className="price-row">
-                              <span>Tax (18%):</span>
-                              <span>${priceDetails.taxAmount}</span>
-                            </div>
-                            <div className="price-row total">
-                              <span>
-                                <strong>Estimated Total:</strong>
-                              </span>
-                              <span>
-                                <strong>${priceDetails.total}</strong>
-                              </span>
-                            </div>
-                            <small className="price-note">
-                              *This is an estimated total. Final pricing will be
-                              confirmed in your quote.
-                            </small>
-
-                            {/* Delivery Address Summary */}
-                            {(contactData.address.street ||
-                              contactData.address.city) && (
-                              <div className="address-summary">
-                                <h5>📍 Delivery Address:</h5>
-                                <p className="address-text">
-                                  {contactData.address.street &&
-                                    `${contactData.address.street}, `}
-                                  {contactData.address.city &&
-                                    `${contactData.address.city}, `}
-                                  {contactData.address.state &&
-                                    `${contactData.address.state}, `}
-                                  {contactData.address.country &&
-                                    `${contactData.address.country} `}
-                                  {contactData.address.zipCode &&
-                                    contactData.address.zipCode}
-                                </p>
-                              </div>
-                            )}
+                    {selectedProducts.length > 0 && (
+                      <>
+                        {/* Delivery Address Summary */}
+                        {(contactData.address.street ||
+                          contactData.address.city) && (
+                          <div className="address-summary">
+                            <h5>📍 Delivery Address:</h5>
+                            <p className="address-text">
+                              {contactData.address.street &&
+                                `${contactData.address.street}, `}
+                              {contactData.address.city &&
+                                `${contactData.address.city}, `}
+                              {contactData.address.state &&
+                                `${contactData.address.state}, `}
+                              {contactData.address.country &&
+                                `${contactData.address.country} `}
+                              {contactData.address.zipCode &&
+                                contactData.address.zipCode}
+                            </p>
                           </div>
-                        );
-                      })()}
+                        )}
+                      </>
+                    )}
                   </div>
 
                   {submitMessage && (

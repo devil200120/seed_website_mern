@@ -114,8 +114,9 @@ const validateQuote = [
   
   body('deliveryTime')
     .optional()
-    .isISO8601()
-    .withMessage('Delivery time must be a valid date'),
+    .isString()
+    .isLength({ max: 200 })
+    .withMessage('Delivery time must be a string with maximum 200 characters'),
   
   handleValidationErrors
 ];

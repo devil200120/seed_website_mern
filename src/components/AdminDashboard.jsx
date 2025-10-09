@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { orderAPI, authUtils } from "../services/api";
+import "./AdminDashboard.css";
 
 function AdminDashboard() {
   const [stats, setStats] = useState({
@@ -140,16 +141,16 @@ function AdminDashboard() {
           <h1>Welcome back, {admin?.name || "Admin"}! 👋</h1>
           <p>Here's what's happening with your business today.</p>
         </div>
-        <div className="quick-actions">
-          <button onClick={handleRefresh} className="quick-action-btn primary">
+        <div className="adm-quick-actions">
+          <button onClick={handleRefresh} className="adm-quick-action-btn primary">
             <span>�</span>
             Refresh Data
           </button>
-          <button className="quick-action-btn secondary">
+          <button className="adm-quick-action-btn secondary">
             <span>�</span>
             View All Orders
           </button>
-          <button className="quick-action-btn tertiary">
+          <button className="adm-quick-action-btn tertiary">
             <span>�</span>
             Analytics
           </button>
@@ -157,44 +158,33 @@ function AdminDashboard() {
       </div>
 
       {/* Stats Cards */}
-      <div className="stats-grid">
-        <div className="stat-card orders">
-          <div className="stat-icon">📊</div>
-          <div className="stat-content">
-            <div className="stat-number">
+      <div className="adm-stats-grid">
+        <div className="adm-stat-card orders">
+          <div className="adm-stat-icon">📊</div>
+          <div className="adm-stat-content">
+            <div className="adm-stat-number">
               {stats.totalOrders.toLocaleString()}
             </div>
-            <div className="stat-label">Total Orders</div>
-            <div className="stat-change positive">+12% from last month</div>
+            <div className="adm-stat-label">Total Orders</div>
+            <div className="adm-stat-change positive">+12% from last month</div>
           </div>
         </div>
 
-        <div className="stat-card revenue">
-          <div className="stat-icon">💰</div>
-          <div className="stat-content">
-            <div className="stat-number">
-              {formatCurrency(stats.totalRevenue)}
-            </div>
-            <div className="stat-label">Total Revenue</div>
-            <div className="stat-change positive">+8% from last month</div>
+        <div className="adm-stat-card completed">
+          <div className="adm-stat-icon">✅</div>
+          <div className="adm-stat-content">
+            <div className="adm-stat-number">{stats.completedOrders}</div>
+            <div className="adm-stat-label">Completed Orders</div>
+            <div className="adm-stat-change positive">Orders delivered</div>
           </div>
         </div>
 
-        <div className="stat-card completed">
-          <div className="stat-icon">✅</div>
-          <div className="stat-content">
-            <div className="stat-number">{stats.completedOrders}</div>
-            <div className="stat-label">Completed Orders</div>
-            <div className="stat-change positive">Orders delivered</div>
-          </div>
-        </div>
-
-        <div className="stat-card pending">
-          <div className="stat-icon">⏳</div>
-          <div className="stat-content">
-            <div className="stat-number">{stats.pendingOrders}</div>
-            <div className="stat-label">Pending Orders</div>
-            <div className="stat-change neutral">Needs attention</div>
+        <div className="adm-stat-card pending">
+          <div className="adm-stat-icon">⏳</div>
+          <div className="adm-stat-content">
+            <div className="adm-stat-number">{stats.pendingOrders}</div>
+            <div className="adm-stat-label">Pending Orders</div>
+            <div className="adm-stat-change neutral">Needs attention</div>
           </div>
         </div>
       </div>

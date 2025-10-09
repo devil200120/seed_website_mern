@@ -425,7 +425,7 @@
 /* Main Content */
 .admin-content {
   flex: 1;
-  padding: 32px;
+  padding: 20px;
   overflow-y: auto;
   background: #f8fafc;
 }
@@ -458,12 +458,12 @@
   color: white;
   padding: 32px;
   border-radius: 16px;
-  margin-bottom: 32px;
+  margin-bottom: 20px;
   box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
 }
 
 .welcome-content h1 {
-  margin: 0 0 8px 0;
+  margin: 0;
   font-size: 32px;
   font-weight: 700;
 }
@@ -526,14 +526,14 @@
 }
 
 /* Stats Grid */
-.stats-grid {
+.adm-stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 24px;
-  margin-bottom: 32px;
+  margin-bottom: 20px;
 }
 
-.stat-card {
+.adm-stat-card {
   background: white;
   padding: 28px;
   border-radius: 16px;
@@ -544,7 +544,7 @@
   overflow: hidden;
 }
 
-.stat-card::before {
+.adm-stat-card::before {
   content: "";
   position: absolute;
   top: 0;
@@ -553,34 +553,30 @@
   height: 4px;
 }
 
-.stat-card.orders::before {
+.adm-stat-card.orders::before {
   background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
 }
 
-.stat-card.revenue::before {
+.adm-stat-card.completed::before {
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
 }
 
-.stat-card.customers::before {
-  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-}
-
-.stat-card.pending::before {
+.adm-stat-card.pending::before {
   background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
 }
 
-.stat-card:hover {
+.adm-stat-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
 }
 
-.stat-card {
+.adm-stat-card {
   display: flex;
   align-items: center;
   gap: 20px;
 }
 
-.stat-icon {
+.adm-stat-icon {
   font-size: 32px;
   background: #f8fafc;
   padding: 16px;
@@ -588,25 +584,25 @@
   border: 1px solid #e2e8f0;
 }
 
-.stat-content {
+.adm-stat-content {
   flex: 1;
 }
 
-.stat-number {
+.adm-stat-number {
   font-size: 28px;
   font-weight: 700;
   color: #1e293b;
   margin-bottom: 4px;
 }
 
-.stat-label {
+.adm-stat-label {
   font-size: 14px;
   color: #64748b;
   font-weight: 500;
   margin-bottom: 8px;
 }
 
-.stat-change {
+.adm-stat-change {
   font-size: 12px;
   font-weight: 600;
   padding: 4px 8px;
@@ -614,12 +610,12 @@
   display: inline-block;
 }
 
-.stat-change.positive {
+.adm-stat-change.positive {
   background: #dcfce7;
   color: #166534;
 }
 
-.stat-change.negative {
+.adm-stat-change.negative {
   background: #fee2e2;
   color: #dc2626;
 }
@@ -642,6 +638,10 @@
 
 .dashboard-card:hover {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.quick-stats-card {
+  grid-column: span 2;
 }
 
 .card-header {
@@ -850,7 +850,7 @@
 .quick-stats {
   padding: 0 24px 24px 24px;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 16px;
 }
 
@@ -1440,7 +1440,7 @@
     padding: 20px;
   }
 
-  .stats-grid {
+  .adm-stats-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 
@@ -1477,11 +1477,11 @@
 }
 
 @media (max-width: 480px) {
-  .stats-grid {
+  .adm-stats-grid {
     grid-template-columns: 1fr;
   }
 
-  .stat-card {
+  .adm-stat-card {
     flex-direction: column;
     text-align: center;
     gap: 12px;
@@ -1544,7 +1544,7 @@
   animation: fadeIn 0.6s ease-out;
 }
 
-.stat-card,
+.adm-stat-card,
 .dashboard-card,
 .kpi-card {
   animation: fadeIn 0.6s ease-out;

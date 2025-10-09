@@ -2,7 +2,6 @@ import { useState } from "react";
 import AdminDashboard from "../components/AdminDashboard";
 import VendorManagement from "../components/VendorManagement";
 import QuotationManagement from "../components/QuotationManagement";
-import CustomerManagement from "../components/CustomerManagement";
 import "./AdminPanel.css";
 
 function AdminPanel() {
@@ -30,13 +29,6 @@ function AdminPanel() {
       icon: "🏪",
       component: VendorManagement,
       gradient: "linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)",
-    },
-    {
-      id: "customers",
-      label: "Customers Management",
-      icon: "👥",
-      component: CustomerManagement,
-      gradient: "linear-gradient(135deg, #fa709a 0%, #fee140 100%)",
     },
   ];
 

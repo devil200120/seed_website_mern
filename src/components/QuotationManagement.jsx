@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { orderAPI } from "../services/api";
 import "./QuotationManagement.css";
 
@@ -7,6 +7,7 @@ function QuotationManagement() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showQuoteModal, setShowQuoteModal] = useState(false);
   const [quoteData, setQuoteData] = useState({
@@ -16,6 +17,7 @@ function QuotationManagement() {
   });
   const [updatingQuote, setUpdatingQuote] = useState(false);
   const [message, setMessage] = useState("");
+  const dropdownRef = useRef(null);
 
   const downloadCSV = () => {
     // Prepare CSV data
@@ -92,6 +94,20 @@ function QuotationManagement() {
     fetchOrders();
   }, [filterStatus, searchTerm]);
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const fetchOrders = async () => {
     try {
       setLoading(true);
@@ -116,39 +132,36 @@ function QuotationManagement() {
   const getMockOrders = () => {
     return [
       {
-        _id: "ORD-001",
-        orderNumber: "ORD-001",
+        _id: "ORD-000001",
+        orderNumber: "ORD-000001",
         customerInfo: {
-          name: "John Doe",
-          email: "john@example.com",
-          phone: "+1 234 567 8900",
-          company: "ABC Trading Co.",
+          name: "John Smith",
+          email: "john.smith@example.com",
+          phone: "9876543210",
+          company: "Tech Solutions Inc",
         },
         deliveryAddress: {
-          street: "123 Business St",
-          city: "New York",
-          state: "NY",
+          street: "123 Main Street, Tech Park",
+          city: "Silicon Valley",
+          state: "CA",
           country: "USA",
-          zipCode: "10001",
+          zipCode: "94000",
         },
         products: [
           {
-            name: "Premium Basmati Rice",
-            quantity: 10,
-            unit: "MT",
-            estimatedPrice: 1000,
+            name: "Product A",
+            quantity: 25,
+            unit: "Units",
           },
           {
-            name: "Fresh Onions",
-            quantity: 5,
-            unit: "MT",
-            estimatedPrice: 300,
+            name: "Product B",
+            quantity: 15,
+            unit: "Units",
           },
         ],
-        estimatedTotal: 13000,
         status: "pending",
-        createdAt: new Date().toISOString(),
-        requirements: "Please ensure organic certification for the rice.",
+        createdAt: "2025-10-08T00:00:00.000Z",
+        requirements: "Handle with care - fragile items",
       },
     ];
   };
@@ -226,21 +239,21 @@ function QuotationManagement() {
 
   const getStatusBadge = (status) => {
     const statusConfig = {
-      pending: { label: "Pending", color: "#f59e0b" },
-      quoted: { label: "Quoted", color: "#8b5cf6" },
-      confirmed: { label: "Confirmed", color: "#10b981" },
-      processing: { label: "Processing", color: "#06b6d4" },
-      shipped: { label: "Shipped", color: "#6366f1" },
-      delivered: { label: "Delivered", color: "#059669" },
-      cancelled: { label: "Cancelled", color: "#ef4444" },
+      pending: { label: "PENDING", color: "#f59e0b", bgColor: "#fef3c7" },
+      quoted: { label: "QUOTED", color: "#8b5cf6", bgColor: "#f3e8ff" },
+      confirmed: { label: "CONFIRMED", color: "#10b981", bgColor: "#d1fae5" },
+      processing: { label: "PROCESSING", color: "#06b6d4", bgColor: "#cffafe" },
+      shipped: { label: "SHIPPED", color: "#6366f1", bgColor: "#e0e7ff" },
+      delivered: { label: "DELIVERED", color: "#059669", bgColor: "#d1fae5" },
+      cancelled: { label: "CANCELLED", color: "#ef4444", bgColor: "#fee2e2" },
     };
 
-    const config = statusConfig[status] || { label: status, color: "#6b7280" };
+    const config = statusConfig[status] || { label: status.toUpperCase(), color: "#6b7280", bgColor: "#f3f4f6" };
 
     return (
       <span
         className="status-badge"
-        style={{ backgroundColor: config.color + "20", color: config.color }}
+        style={{ backgroundColor: config.bgColor, color: config.color }}
       >
         {config.label}
       </span>
@@ -260,21 +273,6 @@ function QuotationManagement() {
 
   return (
     <div className="quotation-management">
-      <div className="quotation-header">
-        <div className="header-content">
-          <h2>Quotation Management</h2>
-          <p>Review order requests and send quotations to buyers</p>
-        </div>
-        <div className="header-actions">
-          <button className="download-btn" onClick={downloadCSV}>
-            📥 Download Data
-          </button>
-          <button className="refresh-btn" onClick={fetchOrders}>
-            🔄 Refresh
-          </button>
-        </div>
-      </div>
-
       {message && (
         <div
           className={`alert ${
@@ -305,32 +303,77 @@ function QuotationManagement() {
           />
         </div>
 
-        <div className="filter-buttons">
-          <button
-            className={`filter-btn ${filterStatus === "all" ? "active" : ""}`}
-            onClick={() => setFilterStatus("all")}
+        <div className="cust-filter-dropdown" ref={dropdownRef}>
+          <div
+            className="cust-dropdown-trigger"
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           >
-            All Orders
-          </button>
-          <button
-            className={`filter-btn ${filterStatus === "pending" ? "active" : ""}`}
-            onClick={() => setFilterStatus("pending")}
-          >
-            Pending
-          </button>
-          <button
-            className={`filter-btn ${filterStatus === "quoted" ? "active" : ""}`}
-            onClick={() => setFilterStatus("quoted")}
-          >
-            Quoted
-          </button>
-          <button
-            className={`filter-btn ${filterStatus === "confirmed" ? "active" : ""}`}
-            onClick={() => setFilterStatus("confirmed")}
-          >
-            Confirmed
-          </button>
+            <span className="cust-dropdown-label">
+              {filterStatus === "all" && "All Orders"}
+              {filterStatus === "pending" && "Pending"}
+              {filterStatus === "quoted" && "Quoted"}
+              {filterStatus === "confirmed" && "Confirmed"}
+            </span>
+            <svg
+              className={`cust-dropdown-arrow ${isDropdownOpen ? "open" : ""}`}
+              width="12"
+              height="12"
+              viewBox="0 0 12 12"
+              fill="currentColor"
+            >
+              <path d="M6 9L1 4h10z" />
+            </svg>
+          </div>
+
+          {isDropdownOpen && (
+            <div className="dropdown-menu">
+              <div
+                className={`dropdown-item ${filterStatus === "all" ? "active" : ""}`}
+                onClick={() => {
+                  setFilterStatus("all");
+                  setIsDropdownOpen(false);
+                }}
+              >
+                All Orders
+              </div>
+              <div
+                className={`dropdown-item ${filterStatus === "pending" ? "active" : ""}`}
+                onClick={() => {
+                  setFilterStatus("pending");
+                  setIsDropdownOpen(false);
+                }}
+              >
+                Pending
+              </div>
+              <div
+                className={`dropdown-item ${filterStatus === "quoted" ? "active" : ""}`}
+                onClick={() => {
+                  setFilterStatus("quoted");
+                  setIsDropdownOpen(false);
+                }}
+              >
+                Quoted
+              </div>
+              <div
+                className={`dropdown-item ${filterStatus === "confirmed" ? "active" : ""}`}
+                onClick={() => {
+                  setFilterStatus("confirmed");
+                  setIsDropdownOpen(false);
+                }}
+              >
+                Confirmed
+              </div>
+            </div>
+          )}
         </div>
+
+        <button className="download-btn" onClick={downloadCSV}>
+          📥 Download Data
+        </button>
+
+        <button className="refresh-btn" onClick={fetchOrders}>
+          🔄 Refresh
+        </button>
       </div>
 
       {/* Orders List */}
@@ -350,7 +393,7 @@ function QuotationManagement() {
             <div key={order._id} className="quotation-card">
               <div className="quotation-card-header">
                 <div className="order-info">
-                  <h3>Order #{order.orderNumber}</h3>
+                  <h3>{order.orderNumber}</h3>
                   <span className="order-date">
                     {new Date(order.createdAt).toLocaleDateString("en-US", {
                       year: "numeric",
@@ -364,30 +407,30 @@ function QuotationManagement() {
 
               <div className="quotation-card-body">
                 <div className="customer-section">
-                  <h4>Customer Information</h4>
+                  <h4><span className="section-icon">👤</span> Customer Information</h4>
                   <div className="customer-details">
-                    <div className="detail-item">
-                      <span className="detail-label">Name:</span>
-                      <span className="detail-value">
+                    <div className="cust-detail-item">
+                      <span className="cust-detail-icon">👤</span>
+                      <span className="cust-detail-value">
                         {order.customerInfo?.name}
                       </span>
                     </div>
-                    <div className="detail-item">
-                      <span className="detail-label">Email:</span>
-                      <span className="detail-value">
+                    <div className="cust-detail-item">
+                      <span className="cust-detail-icon">✉️</span>
+                      <span className="cust-detail-value">
                         {order.customerInfo?.email}
                       </span>
                     </div>
-                    <div className="detail-item">
-                      <span className="detail-label">Phone:</span>
-                      <span className="detail-value">
+                    <div className="cust-detail-item">
+                      <span className="cust-detail-icon">📞</span>
+                      <span className="cust-detail-value">
                         {order.customerInfo?.phone}
                       </span>
                     </div>
                     {order.customerInfo?.company && (
-                      <div className="detail-item">
-                        <span className="detail-label">Company:</span>
-                        <span className="detail-value">
+                      <div className="cust-detail-item">
+                        <span className="cust-detail-icon">🏢</span>
+                        <span className="cust-detail-value">
                           {order.customerInfo.company}
                         </span>
                       </div>
@@ -396,10 +439,10 @@ function QuotationManagement() {
                 </div>
 
                 <div className="products-section">
-                  <h4>Requested Products</h4>
-                  <div className="products-list">
+                  <h4><span className="section-icon">📦</span> Requested Products</h4>
+                  <div className="cust-products-list">
                     {order.products?.map((product, index) => (
-                      <div key={index} className="product-item">
+                      <div key={index} className="cust-product-item">
                         <span className="product-name">{product.name}</span>
                         <span className="product-quantity">
                           {product.quantity} {product.unit}
@@ -411,7 +454,7 @@ function QuotationManagement() {
 
                 {order.deliveryAddress && (
                   <div className="delivery-section">
-                    <h4>Delivery Address</h4>
+                    <h4><span className="section-icon">📍</span> Delivery Address</h4>
                     <p className="address-text">
                       {order.deliveryAddress.street}, {order.deliveryAddress.city},{" "}
                       {order.deliveryAddress.state}, {order.deliveryAddress.country}{" "}
@@ -422,7 +465,7 @@ function QuotationManagement() {
 
                 {order.requirements && (
                   <div className="requirements-section">
-                    <h4>Special Requirements</h4>
+                    <h4><span className="section-icon">📝</span> Special Requirements</h4>
                     <p className="requirements-text">{order.requirements}</p>
                   </div>
                 )}
@@ -434,8 +477,8 @@ function QuotationManagement() {
                   onClick={() => openQuoteModal(order)}
                 >
                   {order.status === "quoted"
-                    ? "📝 Update Quotation"
-                    : "📤 Send Quotation"}
+                    ? "Update Quotation"
+                    : "Update Quotation"}
                 </button>
               </div>
             </div>

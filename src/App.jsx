@@ -30,7 +30,6 @@ import AdminSignup from "./pages/AdminSignup";
 import AdminPanel from "./pages/AdminPanel";
 import VendorLogin from "./pages/VendorLogin";
 import VendorDashboardPage from "./pages/VendorDashboardPage";
-import CustomerRegister from "./pages/CustomerRegister";
 import VendorRegister from "./pages/VendorRegister";
 
 function App() {
@@ -127,9 +126,6 @@ function App() {
                 {/* Other Routes */}
                 <Route path="/certifications" element={<Certifications />} />
                 <Route path="/contact" element={<Contact />} />
-
-                {/* Customer Routes */}
-                <Route path="/customer-register" element={<CustomerRegister />} />
                 
                 {/* Vendor Routes */}
                 <Route path="/vendor-register" element={<VendorRegister />} />

@@ -966,12 +966,6 @@ export const sendQuoteNotificationToCustomer = async (order) => {
           
           <p>Great news! We've prepared a detailed quote for your order. Please review the details below:</p>
           
-          <div class="quote-box">
-            <h3>💵 Your Quote</h3>
-            <div class="quote-amount">$${order.quotedPrice.toLocaleString()}</div>
-            <p><strong>Valid for 30 days</strong></p>
-          </div>
-          
           <div class="order-info">
             <h3>📋 Order Details</h3>
             <p><strong>Order Number:</strong> ${order.orderNumber}</p>
@@ -1046,7 +1040,7 @@ export const sendQuoteNotificationToCustomer = async (order) => {
         address: process.env.EMAIL_USER
       },
       to: order.customerInfo.email,
-      subject: `💰 Your Quote is Ready! $${order.quotedPrice.toLocaleString()} - Order ${order.orderNumber}`,
+      subject: `Your Quote is Ready! - Order ${order.orderNumber}`,
       html: htmlContent,
       // Add plain text fallback
       text: `
@@ -1056,7 +1050,6 @@ export const sendQuoteNotificationToCustomer = async (order) => {
         
         We've prepared a quote for your order:
         
-        Quote Amount: $${order.quotedPrice.toLocaleString()}
         Order Number: ${order.orderNumber}
         Total Items: ${order.totalItems}
         
@@ -1397,12 +1390,6 @@ export const sendQuoteWithInvoicePDF = async (order) => {
             <p>This PDF contains detailed pricing, terms, and payment information.</p>
           </div>
           
-          <div class="quote-box">
-            <h3>💵 Your Quote</h3>
-            <div class="quote-amount">$${order.quotedPrice.toLocaleString()}</div>
-            <p><strong>Valid for 30 days</strong></p>
-          </div>
-          
           <div class="order-info">
             <h3>📋 Order Details</h3>
             <p><strong>Order Number:</strong> ${order.orderNumber}</p>
@@ -1477,7 +1464,7 @@ export const sendQuoteWithInvoicePDF = async (order) => {
         address: process.env.EMAIL_USER
       },
       to: order.customerInfo.email,
-      subject: `💰📄 Your Quote & Invoice Ready! $${order.quotedPrice.toLocaleString()} - Order ${order.orderNumber}`,
+      subject: ` Your Quote & Invoice Ready! - Order ${order.orderNumber}`,
       html: htmlContent,
       attachments: [
         {
